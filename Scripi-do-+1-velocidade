@@ -57,7 +57,7 @@ end)
 task.spawn(function()
     while true do
         if autoTPAtivo then
-            for i = 90, 1, -1 do
+            for i = 1, 1, -1 do
                 statusLabel.Text = "Contagem: " .. i .. "s"
                 wait(1)
             end
