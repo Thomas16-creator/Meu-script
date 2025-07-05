@@ -1,0 +1,73 @@
+local player = game.Players.LocalPlayer
+local teleportPos = Vector3.new(2298, 3.057469129562378, 960.7728881835938)
+
+local gui = Instance.new("ScreenGui")
+gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local toggleHUDButton = Instance.new("TextButton")
+toggleHUDButton.Size = UDim2.new(0, 60, 0, 30)
+toggleHUDButton.Position = UDim2.new(0, 10, 0, 10)
+toggleHUDButton.Text = "HUD"
+toggleHUDButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+toggleHUDButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleHUDButton.TextScaled = true
+toggleHUDButton.Draggable = true
+toggleHUDButton.Active = true
+toggleHUDButton.Parent = gui
+
+local hudFrame = Instance.new("Frame")
+hudFrame.Size = UDim2.new(0, 180, 0, 80)
+hudFrame.Position = UDim2.new(0, 10, 0, 50)
+hudFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+hudFrame.Visible = false
+hudFrame.Active = true
+hudFrame.Draggable = true
+hudFrame.Parent = gui
+
+local autoTPButton = Instance.new("TextButton")
+autoTPButton.Size = UDim2.new(0, 160, 0, 30)
+autoTPButton.Position = UDim2.new(0, 10, 0, 10)
+autoTPButton.Text = "Auto TP [OFF]"
+autoTPButton.BackgroundColor3 = Color3.fromRGB(50, 150, 200)
+autoTPButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+autoTPButton.TextScaled = true
+autoTPButton.Parent = hudFrame
+
+local statusLabel = Instance.new("TextLabel")
+statusLabel.Size = UDim2.new(0, 160, 0, 30)
+statusLabel.Position = UDim2.new(0, 10, 0, 45)
+statusLabel.Text = "Contagem: --"
+statusLabel.BackgroundTransparency = 1
+statusLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+statusLabel.TextScaled = true
+statusLabel.Parent = hudFrame
+
+local autoTPAtivo = false
+
+autoTPButton.MouseButton1Click:Connect(function()
+    autoTPAtivo = not autoTPAtivo
+    autoTPButton.Text = autoTPAtivo and "Auto TP [ON]" or "Auto TP [OFF]"
+end)
+
+toggleHUDButton.MouseButton1Click:Connect(function()
+    hudFrame.Visible = not hudFrame.Visible
+end)
+
+task.spawn(function()
+    while true do
+        if autoTPAtivo then
+            for i = 90, 1, -1 do
+                statusLabel.Text = "Contagem: " .. i .. "s"
+                wait(1)
+            end
+            local char = player.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                char.HumanoidRootPart.CFrame = CFrame.new(teleportPos)
+            end
+        else
+            statusLabel.Text = "Contagem: --"
+            wait(1)
+        end
+    end
+end)
