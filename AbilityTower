@@ -1,0 +1,76 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local root = character:WaitForChild("HumanoidRootPart")
+
+-- NOVA POSIÇÃO
+local targetPos = Vector3.new(-219.88531494140625, 341.2096862792969, 128.53163146972656)
+
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "TPHUD"
+
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 160, 0, 120)
+frame.Position = UDim2.new(0, 15, 0.5, -60)
+frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, 0, 0, 20)
+title.Text = "Thomas Script"
+title.TextScaled = true
+title.TextColor3 = Color3.new(1,1,1)
+title.BackgroundTransparency = 1
+title.Font = Enum.Font.GothamBold
+
+local tp = Instance.new("TextButton", frame)
+tp.Size = UDim2.new(1, -20, 0, 30)
+tp.Position = UDim2.new(0, 10, 0, 25)
+tp.Text = "TP Direto"
+tp.TextScaled = true
+tp.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+tp.TextColor3 = Color3.new(1,1,1)
+tp.Font = Enum.Font.Gotham
+tp.MouseButton1Click:Connect(function()
+	root.CFrame = CFrame.new(targetPos)
+end)
+
+local input = Instance.new("TextBox", frame)
+input.Size = UDim2.new(1, -20, 0, 25)
+input.Position = UDim2.new(0, 10, 0, 60)
+input.Text = "Tempo: 3"
+input.TextScaled = true
+input.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+input.TextColor3 = Color3.new(1,1,1)
+input.Font = Enum.Font.Gotham
+
+local autoTp = Instance.new("TextButton", frame)
+autoTp.Size = UDim2.new(1, -20, 0, 25)
+autoTp.Position = UDim2.new(0, 10, 0, 90)
+autoTp.Text = "Auto TP [OFF]"
+autoTp.TextScaled = true
+autoTp.BackgroundColor3 = Color3.fromRGB(0, 255, 127)
+autoTp.TextColor3 = Color3.new(1,1,1)
+autoTp.Font = Enum.Font.Gotham
+
+-- AUTO TP CONTÍNUO
+local running = false
+
+autoTp.MouseButton1Click:Connect(function()
+	running = not running
+	autoTp.Text = running and "Auto TP [ON]" or "Auto TP [OFF]"
+
+	while running do
+		local t = tonumber(input.Text:match("%d+")) or 3
+		for i = t, 1, -1 do
+			if not running then break end
+			autoTp.Text = "TP em " .. i .. "s"
+			task.wait(1)
+		end
+		if running then
+			root.CFrame = CFrame.new(targetPos)
+			autoTp.Text = "Auto TP [ON]"
+		end
+	end
+end)
