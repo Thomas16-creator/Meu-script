@@ -1,13 +1,15 @@
 local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui")
+gui.Name = "TPHUD"
+gui.ResetOnSpawn = false -- impede sumir após morte
+gui.Parent = player:WaitForChild("PlayerGui")
+
+-- VARIÁVEIS
 local character = player.Character or player.CharacterAdded:Wait()
 local root = character:WaitForChild("HumanoidRootPart")
+local targetPos = Vector3.new(-219.885, 341.209, 128.531)
 
--- NOVA POSIÇÃO
-local targetPos = Vector3.new(-219.88531494140625, 341.2096862792969, 128.53163146972656)
-
-local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-gui.Name = "TPHUD"
-
+-- GUI
 local frame = Instance.new("Frame", gui)
 frame.Size = UDim2.new(0, 160, 0, 120)
 frame.Position = UDim2.new(0, 15, 0.5, -60)
@@ -25,20 +27,17 @@ title.BackgroundTransparency = 1
 title.Font = Enum.Font.GothamBold
 
 local tp = Instance.new("TextButton", frame)
-tp.Size = UDim2.new(1, -20, 0, 30)
+tp.Size = UDim2.new(1, -20, 0, 25)
 tp.Position = UDim2.new(0, 10, 0, 25)
 tp.Text = "TP Direto"
 tp.TextScaled = true
 tp.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 tp.TextColor3 = Color3.new(1,1,1)
 tp.Font = Enum.Font.Gotham
-tp.MouseButton1Click:Connect(function()
-	root.CFrame = CFrame.new(targetPos)
-end)
 
 local input = Instance.new("TextBox", frame)
 input.Size = UDim2.new(1, -20, 0, 25)
-input.Position = UDim2.new(0, 10, 0, 60)
+input.Position = UDim2.new(0, 10, 0, 55)
 input.Text = "Tempo: 3"
 input.TextScaled = true
 input.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
@@ -47,16 +46,20 @@ input.Font = Enum.Font.Gotham
 
 local autoTp = Instance.new("TextButton", frame)
 autoTp.Size = UDim2.new(1, -20, 0, 25)
-autoTp.Position = UDim2.new(0, 10, 0, 90)
+autoTp.Position = UDim2.new(0, 10, 0, 85)
 autoTp.Text = "Auto TP [OFF]"
 autoTp.TextScaled = true
 autoTp.BackgroundColor3 = Color3.fromRGB(0, 255, 127)
 autoTp.TextColor3 = Color3.new(1,1,1)
 autoTp.Font = Enum.Font.Gotham
 
--- AUTO TP CONTÍNUO
-local running = false
+-- TP Direto
+tp.MouseButton1Click:Connect(function()
+	root.CFrame = CFrame.new(targetPos)
+end)
 
+-- Auto TP contínuo
+local running = false
 autoTp.MouseButton1Click:Connect(function()
 	running = not running
 	autoTp.Text = running and "Auto TP [ON]" or "Auto TP [OFF]"
@@ -73,4 +76,10 @@ autoTp.MouseButton1Click:Connect(function()
 			autoTp.Text = "Auto TP [ON]"
 		end
 	end
+end)
+
+-- Atualiza o root após a morte
+player.CharacterAdded:Connect(function(char)
+	character = char
+	root = character:WaitForChild("HumanoidRootPart")
 end)
